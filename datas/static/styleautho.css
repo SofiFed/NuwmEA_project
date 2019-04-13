@@ -1,0 +1,98 @@
+body{
+	background-image: url('image.png');
+	font-family: 'Roboto Bold';
+    }
+.avatar {
+  display: block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 5px auto;
+}
+.horForm{
+ position: relative;
+ top: 100px;
+ background: rgba(21, 83, 117, 0.9);
+ padding-bottom: 20px;
+ border-radius: 15px;
+ text-align: center;
+}
+.horForm .head{
+ display: block;
+ font-size: 35px;
+ font-weight: bold;
+ padding: 15px 0;
+ color: white;
+
+}
+.horForm .form-group{
+ padding: 0 40px;
+ margin: 0 0 25px 0;
+ position: relative;
+}
+.horForm .form-control{
+ border: none;
+ border-radius: 20px;
+ padding: 0 20px 0 45px;
+ height: 40px;
+ transition: all 0.3s ease 0s;
+}
+.horForm .form-control:focus{
+ background: #F0F8FF;
+ box-shadow: none;
+ outline: 0 none;
+}
+.horForm .form-group i{
+ position: absolute;
+ top: 12px;
+ left: 60px;
+ font-size: 17px;
+ color: rgba(21, 83, 117, 0.9) ;
+ transition : all 0.5s ease 0s;
+}
+.horForm .form-control:focus + i{
+ color: #1E90FF;
+}
+.horForm .fa-question-circle{
+ display: inline-block;
+ position: absolute;
+ top: 12px;
+ right: 60px;
+ font-size: 20px;
+ color: rgba(21, 83, 117, 0.9) ;
+ transition: all 0.5s ease 0s;
+ outline: none;
+}
+.horForm .fa-question-circle:hover{
+ color: #1E90FF;
+ outline: none;
+}
+.horForm .btn{
+ float: center;
+ font-size: 1em;
+ font-weight: bold;
+ color: #fff;
+ background: rgb(0, 117,182);
+ border-radius: 20px;
+ padding: 10px 25px;
+ border: none;
+ transition: all 0.5s ease 0s;
+}
+.horForm .btn:hover
+{
+		background: rgb(53,167,110);
+ }
+
+}
+
+@media only screen and (max-width: 479px){
+ .horForm .form-group{
+ padding: 0 25px;
+ }
+ .horForm .form-group i{
+ left: 45px;
+ }
+ .horForm .btn{
+ padding: 10px 20px;
+ }

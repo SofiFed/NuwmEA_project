@@ -1,0 +1,11 @@
+{% extends 'header.html' %}
+
+{% block content %}
+    <br><br><br><br><br><br><br><br>
+    {% if user.is_authenticated %}
+	<p>User <b>{{user.username}} </b> is logged</p>
+	{% else %}
+	<p> User isn`t logged</p>
+	<a href="{% url 'user_login' %}">Log in</a> /
+	{% endif %}
+{% endblock %}

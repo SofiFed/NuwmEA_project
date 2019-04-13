@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<meta charset="utf-8"/> 
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'style2.css' %}" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body>
+	<header>
+		<p id="text">NuwmEnergyAnalytics</p>
+	</header>
+	<form class="menu" method="POST" action="/logout/">
+		    <a href="head.html" title="Головна"><button class="buttons">Головна</button></a>
+			<a href="coldwater.html" title="Холодна вода"><button class="buttons">Холодна вода</button></a>
+			<a href="hotwater.html" title="Гаряча вода"><button class="buttons">Гаряча вода</button></a>
+			<a href="warm.html" title="Тепло"><button class="buttons">Тепло</button></a>
+			<a href="energy.html" title="Електрична енергія"><button class="buttons">Електрична енергія</button></a>
+			<a href="temperature.html" title="Температура"><button class="buttons">Температура</button></a>
+			{% csrf_token %}
+            <a href="{% url 'user_logout' %}" title='Log out'> <button class="buttons">Log out</button></a>
+	</form>
+    <hr />
+	{% block content %}
+	{% endblock %}
+</body>
+</html>
