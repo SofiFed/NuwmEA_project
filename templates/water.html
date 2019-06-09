@@ -1,0 +1,230 @@
+{% extends "layout.html" %}
+{% block title %}Холодна вода{% endblock title %}
+{% block homepage %}<li class="nav-item">{% endblock homepage %}
+{% block waterpage %}<li class="nav-item active">{% endblock waterpage %}
+{% block hotwaterpage %}<li class="nav-item">{% endblock hotwaterpage %}
+{% block warmpage %}<li class="nav-item">{% endblock warmpage %}
+{% block electricitypage %}<li class="nav-item">{% endblock electricitypage %}
+{% block temperaturepage %}<li class="nav-item">{% endblock temperaturepage %}
+{% block profilepage %}<li class="nav-item">{% endblock profilepage %}
+
+{% block content %}
+{% load static %}
+{% if active_manager or user.is_superuser %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'table.css' %}" />
+
+<form name="diagram">
+{% for i in cols %}
+<input type="hidden" value={{i}} />
+{% endfor %}
+</form>
+
+
+<div style="width: 100%; margin-top: 20px;">
+<form action="/water/" method="post" style="background-color: white; width: 30%;  margin: 15px; margin-left:2%; padding: 15px; border: 1px solid black; float:left;">
+  {% csrf_token %}
+    <p style="font-size: 1.5em; text-align: center;"><b>Введіть дані</b></p>
+    <p style="color:red;">{{message}}</p>
+    {{ form1.as_p }}
+    {% for error in errors %}
+    <p style="color:red;">{{error}}</p>
+    {% endfor %}
+    <center><input type="submit" name="water" value="Відправити" style="font-size: 1.5em;"/> </center><br>    
+</form>
+
+<b><p style="text-align: center;">Кількість використаної холодної води за весь період</p></b>
+<div style="display:inline; position: absolute; left: 50%; width: 70%; float: left;">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<style>
+  .bar {
+    fill: steelblue;
+  }
+  .bar:hover {
+    fill: rgb(255, 80, 0);
+  }
+
+  .x.axis {
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .y.axis {
+    font-size: 12px;
+    font-weight: bold;
+  }
+</style>
+<script>
+
+  var margin = {top: 5, right: 20, bottom: 200, left: 50},
+    width = 800 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+  var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scaleBand().range([0, width]).padding(0.1);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  var xAxis = d3.axisBottom(x).ticks(20);
+  var yAxis = d3.axisLeft(y).ticks(10);
+
+  var data = [
+    {"building": "Навчальний корпус №1", "value": parseFloat(diagram.elements[0].value)},
+    {"building": "Навчальний корпус №2", "value": parseFloat(diagram.elements[1].value)},
+    {"building": "Навчальний корпус №4", "value": parseFloat(diagram.elements[2].value)},
+    {"building": "Навчальний корпус №5", "value": parseFloat(diagram.elements[3].value)},
+    {"building": "Навчальний корпус №6", "value": parseFloat(diagram.elements[4].value)},
+    {"building": "Навчальний корпус №7", "value": parseFloat(diagram.elements[5].value)},
+    {"building": "Гараж військової кафедри", "value": parseFloat(diagram.elements[6].value)},
+    {"building": "Спортивний корпус", "value": parseFloat(diagram.elements[7].value)},
+    {"building": "Їдальня №1", "value": parseFloat(diagram.elements[8].value)},
+    {"building": "Гуртожиток №1", "value": parseFloat(diagram.elements[9].value)},
+    {"building": "Гуртожиток №2", "value": parseFloat(diagram.elements[10].value)},
+    {"building": "Гуртожиток №3", "value": parseFloat(diagram.elements[11].value)},
+    {"building": "Гуртожиток №4", "value": parseFloat(diagram.elements[12].value)},
+    {"building": "Гуртожиток №5", "value": parseFloat(diagram.elements[13].value)},
+    {"building": "Гуртожиток №6", "value": parseFloat(diagram.elements[14].value)},
+    {"building": "Гуртожиток №7", "value": parseFloat(diagram.elements[15].value)},
+    {"building": "Гуртожиток №8", "value": parseFloat(diagram.elements[16].value)},
+    {"building": "Павільйон бурових машин", "value": parseFloat(diagram.elements[17].value)},
+    {"building": "Автогосподарство", "value": parseFloat(diagram.elements[18].value)},
+    {"building": "Майстерня-котельня", "value": parseFloat(diagram.elements[19].value)},
+    {"building": "Інститут післядипломної освіти", "value": parseFloat(diagram.elements[20].value)}
+  ];
+
+  x.domain(data.map(d => { return d.building; }));
+  y.domain([0, d3.max(data, d => { return d.value; })]);
+
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+  svg.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", d => { return x(d.building); })
+    .attr("width", x.bandwidth())
+    .attr("y", d => { return y(d.value); })
+    .attr("height", d => { return height - y(d.value); });
+</script>
+</div></div>
+
+<div class="table-container" style="background-color: white;">
+<b><p> Холодна вода споживання, м.куб.</p></b>
+<table class = "tableOne" style="margin-left: 1%;">
+    <tbody>
+      <tr>
+      <th>Об'єкт</td>
+      <th>Навчальний корпус №1</th>
+      <th>Навчальний корпус №2</th>
+      <th>Навчальний корпус №4</th>
+      <th>Навчальний корпус №5</th>
+      <th>Навчальний корпус №6</th>
+      <th>Навчальний корпус №7</th>
+      <th>Гараж військової кафедри</th>
+      <th>Спортивний корпус</th>
+      <th>Їдальня №1</th>
+      <th>Гуртожиток №1</th>
+      <th>Гуртожиток №2</th>
+      <th>Гуртожиток №3</th>
+      <th>Гуртожиток №4</th>
+      <th>Гуртожиток №5</th>
+      <th>Гуртожиток №6</th>
+      <th>Гуртожиток №7</th>
+      <th>Гуртожиток №8</th>
+      <th>Павільйон бурових машин</th>
+      <th>Автогосподарство</th>
+      <th>Майстерня-котельня</th>
+      <th>Інститут післядипломної освіти</th>
+        </tr>
+        <tr>
+      <th>Номер лічильника</th>
+      <th>0741</th>
+      <th>10043130</th>
+      <th>10043138</th>
+      <th>33493</th>
+      <th>201206001031</th>
+      <th>11289</th>
+      <th>4942135</th>
+      <th>1448</th>
+      <th>317</th>
+      <th>58106</th>
+      <th>25521</th>
+      <th>4412</th>
+      <th>0287</th>
+      <th>02492</th>
+      <th>02795</th>
+      <th>02792</th>
+      <th>0299</th>
+      <th>4941051</th>
+      <th>4874171</th>
+      <th>201701001230</th>
+      <th>4879360</th>
+    </tr>
+    <tr>
+      <td style="background-color: #DCDCDC; font-weight: bold;">Дата</td>
+      <td style="background-color: #DCDCDC;" colspan="21"></td>
+    </tr>
+    {% for data in datas %}
+    <tr>
+    {% if data.datemonth == 1 %} <td>січень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 2 %} <td>лютий <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 3 %} <td>березень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 4 %} <td>квітень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 5 %} <td>травень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 6 %} <td>червень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 7 %} <td>липень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 8 %} <td>серпень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 9 %} <td>вересень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 10 %} <td>жовтень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 11 %} <td>листопад <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 12 %} <td>грудень <br> {{data.dateyear}}</td>
+    {% endif %}
+
+    {% if data.ed_building1 == None %} <td></td> {% else %} <td>{{data.ed_building1}}</td> {% endif %}
+    {% if data.ed_building2 == None %} <td></td> {% else %} <td>{{data.ed_building2}}</td> {% endif %}
+    {% if data.ed_building4 == None %} <td></td> {% else %} <td>{{data.ed_building4}}</td> {% endif %}
+    {% if data.ed_building5 == None %} <td></td> {% else %} <td>{{data.ed_building5}}</td> {% endif %}
+    {% if data.ed_building6 == None %} <td></td> {% else %} <td>{{data.ed_building6}}</td> {% endif %}
+    {% if data.ed_building7 == None %} <td></td> {% else %} <td>{{data.ed_building7}}</td> {% endif %}
+    {% if data.garage == None %} <td></td> {% else %} <td>{{data.garage}}</td> {% endif %}
+    {% if data.sport_building == None %} <td></td> {% else %} <td>{{data.sport_building}}</td> {% endif %}
+    {% if data.canteen == None %} <td></td> {% else %} <td>{{data.canteen}}</td> {% endif %}
+    {% if data.hostel1 == None %} <td></td> {% else %} <td>{{data.hostel1}}</td> {% endif %}
+    {% if data.hostel2 == None %} <td></td> {% else %} <td>{{data.hostel2}}</td> {% endif %}
+    {% if data.hostel3 == None %} <td></td> {% else %} <td>{{data.hostel3}}</td> {% endif %}
+    {% if data.hostel4 == None %} <td></td> {% else %} <td>{{data.hostel4}}</td> {% endif %}
+    {% if data.hostel5 == None %} <td></td> {% else %} <td>{{data.hostel5}}</td> {% endif %}
+    {% if data.hostel6 == None %} <td></td> {% else %} <td>{{data.hostel6}}</td> {% endif %}
+    {% if data.hostel7 == None %} <td></td> {% else %} <td>{{data.hostel7}}</td> {% endif %}
+    {% if data.hostel8 == None %} <td></td> {% else %} <td>{{data.hostel8}}</td> {% endif %}
+    {% if data.pavilion == None %} <td></td> {% else %} <td>{{data.pavilion}}</td> {% endif %}
+    {% if data.car_fleet == None %} <td></td> {% else %} <td>{{data.car_fleet}}</td> {% endif %}
+    {% if data.boiler_house == None %} <td></td> {% else %} <td>{{data.boiler_house}}</td> {% endif %}
+    {% if data.institute == None %} <td></td> {% else %} <td>{{data.institute}}</td> {% endif %}
+  </tr>
+    {% endfor %}
+       
+    </tbody>
+</table>
+</div>
+{% else %}
+<br><br><p style="color: rgb(255, 80, 0); font-size: 2.5em; text-align: center; background-color: white;">У Вас немає доступу до цієї таблиці</p>
+<center><button style="background-color: white;"><a style="color:rgb(0,71,107); font-size: 1.5em;" href="{% url 'home' %}">Повернутися на Головну сторінку</a></button></center>
+{% endif %}
+{% endblock content %}

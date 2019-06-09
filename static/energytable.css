@@ -1,0 +1,29 @@
+.tableOneE td {
+   height: 20px;
+ }
+ .tableOneE{
+    background-color: white;
+}
+.tableOneE th{
+
+  height: 13em;
+    transform: rotate(-90deg);
+    
+}
+ .tableOneE th,
+ .tableOneE td {
+   text-align: center;
+   font-size: 0.9em;
+   border: 1px solid black;
+
+ }
+ .tableOneE td {
+   height: 20px;
+ }
+.table-container{
+   padding: 1%;
+   width: 100%;
+   overflow-y: auto;
+   overflow: auto;
+   margin: 0 0 1em;
+}

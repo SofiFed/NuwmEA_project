@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{%endblock title %}</title>
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'style2.css' %}" />
+<body>
+<nav class="navbar navbar-expand-xl sticky-top navbar-dark" >
+ <a class="navbar-brand" href="{% url 'home' %}">NuwmEnergyAnalytics</a>
+ <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+   <span class="navbar-toggler-icon"></span>
+ </button>
+
+ <div class="collapse navbar-collapse" id="navbarSupportedContent" style="position: absolute; right: 1%;">
+ <ul class="navbar-nav mr-auto">
+ {% block homepage %}{% endblock homepage %}
+ <a class="nav-link" href="{% url 'home' %}">Головна <span class="sr-only">(current)</span></a>
+ </li>
+ {% block waterpage %}{% endblock waterpage %}
+ <a class="nav-link" href="{% url 'water' %}">Холодна<span class="colortext">_</span>вода</a>
+ </li>
+ {% block hotwaterpage %}{% endblock hotwaterpage %}
+ <a class="nav-link" href="{% url 'hotwater' %}">Гаряча<span class="colortext">_</span>вода</a>
+ </li>
+{% block warmpage %}{% endblock warmpage %}
+ <a class="nav-link" href="{% url 'warm' %}">Тепло</a>
+ </li>
+ {% block electricitypage %}{% endblock electricitypage %}
+ <a class="nav-link" href="{% url 'electricity' %}">Електрична<span class="colortext">_</span>енергія</a>
+ </li>
+{% block temperaturepage %}{% endblock temperaturepage %}
+ <a class="nav-link" href="{% url 'temperature' %}">Температура</a>
+ </li>
+{% block profilepage %}{% endblock profilepage %}
+ <a class="nav-link" href="{% url 'profile' %}">Мій<span class="colortext">_</span>аккаунт</a>
+ </li>
+ <a href="{% url 'logout' %}" class="fas fa-sign-out-alt" id="out" style="top:0px;"></a>
+ </ul></nav>
+</div>
+</nav>
+
+{%block content%}{%endblock content%}
+</body>
+</html>

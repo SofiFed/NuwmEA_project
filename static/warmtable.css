@@ -1,0 +1,23 @@
+.tableOnew{
+    background-color: white;
+}
+.tableOnew th{
+
+  height: 12em;
+    transform: rotate(-90deg);
+    
+}
+ .tableOnew th,
+ .tableOnew td {
+   text-align: center;
+   font-size: 0.9em;
+   border: 1px solid black;
+
+ }
+.table-container{
+   padding: 1%;
+   width: 100%;
+   overflow-y: auto;
+   overflow: auto;
+   margin: 0 0 1em;
+}

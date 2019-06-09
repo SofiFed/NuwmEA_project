@@ -1,0 +1,68 @@
+body{
+	background-image: url('image.png');
+	font-family: Roboto Bold;
+}
+
+.navbar{
+	background-color: rgb(0, 71, 107);
+	font-size: 16px;
+}
+
+#hello{
+	font-size: 2em;
+}
+pre{
+	font-family: Roboto Bold;
+	font-size: 30px;
+	font-weight: bold;
+	color: white;
+}
+.tbl{
+	border-color: black;
+	border-width: 1px;
+	
+}
+.colortext{
+	color: rgb(0, 71, 107); 
+}
+.input {
+ display: inline-block;
+  color: white;
+  font-weight: 700;
+  
+  user-select: none;
+  padding: .5em 2em;
+  outline: none;
+  border: 2px solid;
+  border-radius: 1px;
+  transition: 0.2s;
+  background: #ED6E00; 
+} 
+a{
+	margin: 2px;
+	padding: 5px;
+	text-decoration: none;
+	color: white;
+}
+a:hover{
+	color: white;
+	text-decoration: none;
+}
+.input:hover { 
+	background: rgba(255, 80, 0, 0.8); 
+	font-weight: bold;
+}
+#out{
+ margin-left: 25px;
+ text-decoration:none;
+ color: white;
+ position: relative;
+ font-size: 33px;
+ transition: all 0.5s ease 0s;
+ outline: none;
+}
+#out:hover{
+	color: #EEE5DE;
+}
+
+  

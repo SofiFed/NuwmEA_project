@@ -1,11 +1,48 @@
-{% extends 'header.html' %}
+{% extends "layout.html" %}
+{% block title %}Головна сторінка{% endblock title %}
+{% block homepage %}<li class="nav-item active">{% endblock homepage %}
+{% block waterpage %}<li class="nav-item">{% endblock waterpage %}
+{% block hotwaterpage %}<li class="nav-item">{% endblock hotwaterpage %}
+{% block warmpage %}<li class="nav-item">{% endblock warmpage %}
+{% block electricitypage %}<li class="nav-item">{% endblock electricitypage %}
+{% block temperaturepage %}<li class="nav-item">{% endblock temperaturepage %}
+{% block profilepage %}<li class="nav-item">{% endblock profilepage %}
 
 {% block content %}
-    <br><br><br><br><br><br><br><br>
-    {% if user.is_authenticated %}
-	<p>User <b>{{user.username}} </b> is logged</p>
-	{% else %}
-	<p> User isn`t logged</p>
-	<a href="{% url 'user_login' %}">Log in</a> /
+	{% if user.is_authenticated%}
+			 <br><br><br><br> <center>
+			 <div id="hello">
+             <p> <b>{{user.username}}</b> ({{ user.get_full_name }})</p>
+             <style>
+                #hello{
+                    background-color: #fff;
+                }
+                a{
+                    color: #006187;
+                }
+                a:hover {
+                    color: rgb(255, 80, 0);
+                }
+            </style>
+             {% if user.is_superuser %}
+             	<p>Ви увійшли у систему NuwmEA як <b>Admin</b></p> <br>
+                <p>Для внесення змін до списку Енергоменеджерів перейдіть на<a href="{% url 'profile' %}">сторінку профілю</a></p>
+             {% elif active_manager.is_staff and active_manager.role == 1 %}
+             	<p>Ви увійшли у систему NuwmEA як <b>EManager(Холодна вода)</b></p> <br>
+                <p>Перейдіть до закліпленої за Вами<a href="{% url 'water' %}">таблиці</a></p>
+             {% elif active_manager.is_staff and active_manager.role == 2 %}
+                <p>Ви увійшли у систему NuwmEA як <b>EManager(Гаряча вода)</b></p> <br>
+                <p>Перейдіть до закліпленої за Вами<a href="{% url 'hotwater' %}">таблиці</a></p>
+             {% elif active_manager.is_staff and active_manager.role == 3 %}
+                <p>Ви увійшли у систему NuwmEA як <b>EManager(Тепло)</b></p> <br>
+                <p>Перейдіть до закліпленої за Вами<a href="{% url 'warm' %}">таблиці</a></p>
+             {% elif active_manager.is_staff and active_manager.role == 4 %}
+                <p>Ви увійшли у систему NuwmEA як <b>EManager(Електроенергія)</b></p> <br>
+                <p>Перейдіть до закліпленої за Вами<a href="{% url 'electricity' %}">таблиці</a></p>
+             {% elif active_manager.is_staff and active_manager.role == 5 %}
+                <p>Ви увійшли у систему NuwmEA як <b>EManager(Температура)</b></p> <br>
+                <p>Перейдіть до закліпленої за Вами<a href="{% url 'temperature' %}">таблиці</a></p>
+             {% endif %} </center> </div>
 	{% endif %}
-{% endblock %}
+
+{% endblock content %}

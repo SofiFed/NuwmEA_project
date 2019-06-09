@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% block title %}Мій акаунт{% endblock title %}
+
+
+{% block homepage %}<li class="nav-item">{% endblock homepage %}
+{% block waterpage %}<li class="nav-item">{% endblock waterpage %}
+{% block hotwaterpage %}<li class="nav-item">{% endblock hotwaterpage %}
+{% block warmpage %}<li class="nav-item">{% endblock warmpage %}
+{% block electricitypage %}<li class="nav-item">{% endblock electricitypage %}
+{% block temperaturepage %}<li class="nav-item">{% endblock temperaturepage %}
+{% block profilepage %}<li class="nav-item active">{% endblock profilepage %}
+
+{% block content %}
+{% if user.is_superuser %}
+
+<p style="font-size: 2.5em; text-align: center; background-color: white;" ><b>Профіль Адміністратора</b> <br> 
+<span style="color: rgb(0,71,107); font-size: 0.8em;">{{user.get_full_name}} {{user.email}}</span></p> 
+<div style="width:60%; margin: auto; float: right; margin-right: 3%;">
+{% if managers.count > 0 %}
+<table style="background-color: white; margin: auto;">
+		<tr>
+			<td style="background-color: rgba(0,71,107); color: #fff;">e-mail енергоменеджера</td>
+			<td style="background-color: rgba(0,71,107); color: #fff;">таблиця</td>
+			<td style="background-color: rgba(0,71,107); color: #fff;">активація</td>
+			<td style="background-color: rgba(0,71,107); color: #fff;">доступ</td>
+			<td style="background-color: rgba(0,71,107);"></td>
+		</tr>
+		{% for manager in managers %}
+
+		   <tr>
+
+		   	<td><b>{{ manager.manager_email }}</b></td>
+
+		   	{% if manager.role == 1 %}
+		   	<td>Холодна вода</td>
+		   	{% elif manager.role == 2 %}
+		   	<td>Гаряча вода</td>
+		   	{% elif manager.role == 3 %}
+		   	<td>Тепло</td>
+		   	{% elif manager.role == 4 %}
+		   	<td>Електроенергія</td>
+		   	{% elif manager.role == 5 %}
+		   	<td>Температура</td>
+		   	{% endif %}
+
+		   
+		   	<td>
+		   		<input type="checkbox" id="is-s" disabled="disabled" style="transform: scale(4); margin: 30%;" {% if manager.is_staff %} checked="checked" {% endif %} />
+		   	</td>
+		   	<td>
+		   		{% if manager.is_staff %}
+		   		<form action="/profile/deactiverole/" method="post">
+		           		{% csrf_token %}
+						<input type="hidden" name="m_role" value="{{manager.role}}" />
+						<input type="submit" value="обмежити доступ"/>
+				</form>
+			    {% else %}
+			    <form action="/profile/activerole/" method="post">
+		           		{% csrf_token %}
+						<input type="hidden" name="m_role" value="{{manager.role}}" />
+						<input type="submit" value="надати доступ"/>
+				</form>
+				{% endif %}
+
+			</td>
+		   
+		   	<td>
+		            <form action="/profile/deletemaneger/" method="post">
+		           {% csrf_token %}
+				   <input type="hidden" name="m_role" value="{{manager.role}}" />
+			       <input type="submit" value="видалити">
+					</form>
+	         </td>
+
+		   	</tr> 
+		   	{% endfor %}
+		   	<tr>
+		   		<td></td>
+		   		<td></td>
+		   		<td></td>
+		   		<td></td>
+		   		<td></td>
+		    </tr>
+		
+</table>
+{% else %}
+<p style="background-color: white; font-size: 2.5em; color:rgb(255, 80, 0);"><b>У список ще не добавлено жодного Енергоменеджера</b></p>
+{% endif %}
+</div>
+
+<div style=" width: 40%; display: inline;">
+<form action="/profile/" method="post" style="background-color: white; width: 30%;  margin: 15px; margin-left:5%; padding: 15px; border: 2px solid black;">
+	{% csrf_token %}
+		<p style="color: red;">{{message}}<p>
+		{{ form.as_p }}
+		{% for error in errors %}
+		<p style="color:red;">{{ error }}</p>
+		{% endfor %}
+		<input type="submit" name="addmanager" value="Добавити користувача"  /> <br>		
+</form>
+</div>
+
+<style>
+	td{
+		border: 1px solid black;
+		padding: 10px;
+	}
+</style>
+{% else %}
+	<p style="font-size: 2.5em; text-align: center; background-color: white;" ><b>Профіль Енергоменеджера</b> <br> 
+	<span style="color: rgb(0,71,107); font-size: 0.8em;">{{user.get_full_name}} {{user.email}}</span></p>  <br> <br>
+	<p style="text-align:center; background-color: white; font-size: 2em; color : rgb(255, 80, 0);">у разі виникнення питань зверніться до Адміністратора {{admin}}</p>
+{% endif %}
+{% endblock content %}

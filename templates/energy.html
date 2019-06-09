@@ -1,0 +1,345 @@
+{% extends "layout.html" %}
+{% block title %}Електроенергія{% endblock title %}
+
+{% block homepage %}<li class="nav-item">{% endblock homepage %}
+{% block waterpage %}<li class="nav-item">{% endblock waterpage %}
+{% block hotwaterpage %}<li class="nav-item">{% endblock hotwaterpage %}
+{% block warmpage %}<li class="nav-item">{% endblock warmpage %}
+{% block electricitypage %}<li class="nav-item active">{% endblock electricitypage %}
+{% block temperaturepage %}<li class="nav-item">{% endblock temperaturepage %}
+{% block profilepage %}<li class="nav-item">{% endblock profilepage %}
+
+{% block content %}
+
+{% load static %}
+{% if active_manager or user.is_superuser %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'energytable.css' %}" />
+
+<form name="diagram">
+{% for i in cols %}
+<input type="hidden" value={{i}} />
+{% endfor %}
+</form>
+
+
+<div style="width: 100%; margin-top: 20px;">
+<form action="/electricity/" method="post" style="background-color: white; width: 32%;  margin: 15px; margin-left:2%; padding: 15px; border: 1px solid black; float:left;">
+  {% csrf_token %}
+    <p style="font-size: 1.5em; text-align: center;"><b>Введіть дані</b></p>
+    <p style="color:red;">{{message}}</p>
+    {{ form1.as_p }}
+    {% for error in errors %}
+    <p style="color:red;">{{error}}</p>
+    {% endfor %}
+    <center><input type="submit" name="water" value="Відправити" style="font-size: 1.5em;"/> </center><br>    
+</form>
+
+<b><p style="text-align: center;">Кількість використаної електроенергії за весь період</p></b>
+<div style="display:inline; position: absolute; left: 50%; width: 68%; float: left;">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+  <style>
+  .bar {
+    fill: steelblue;
+  }
+
+  .bar:hover {
+    fill: rgb(255, 80, 0);
+  }
+
+  .x.axis {
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .y.axis {
+    font-size: 12px;
+    font-weight: bold;
+  }
+</style>
+<script>
+
+  var margin = {top: 5, right: 20, bottom: 260, left: 50},
+    width = 800 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+  var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scaleBand().range([0, width]).padding(0.1);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  var xAxis = d3.axisBottom(x).ticks(20);
+  var yAxis = d3.axisLeft(y).ticks(10);
+
+var data = [
+    {"building": "Навч. корпус №1 (Активна)", "value": parseFloat(diagram.elements[0].value)},
+    {"building": "Навч. корпус №1 (Реактивна)", "value": parseFloat(diagram.elements[1].value)},
+    {"building": "Навч. корпус №1 (Генерація)", "value": parseFloat(diagram.elements[2].value)},
+    {"building": "Навч. корпус №2 (255447 Активна)", "value": parseFloat(diagram.elements[3].value)},
+    {"building": "Навч. корпус №2 (255447 Реактивна)", "value": parseFloat(diagram.elements[4].value)},
+    {"building": "Навч. корпус №2 (255447 Генерація)", "value": parseFloat(diagram.elements[5].value)},
+    {"building": "Навч. корпус №2 (255388 Активна)", "value": parseFloat(diagram.elements[6].value)},
+    {"building": "Навч. корпус №2 (255388 Реактивна)", "value": parseFloat(diagram.elements[7].value)},
+    {"building": "Навч. корпус №2 (255388 Генерація)", "value": parseFloat(diagram.elements[8].value)},
+    {"building": "Навч. корпус №2a (0223942 Активна)", "value": parseFloat(diagram.elements[9].value)},
+    {"building": "Навч. корпус №2a(0223942 Реактивна)", "value": parseFloat(diagram.elements[10].value)},
+    {"building": "Навч. корпус №2a(0223942 Генерація)", "value": parseFloat(diagram.elements[11].value)},
+    {"building": "Навч. корпус №2a(0147641 Активна)", "value": parseFloat(diagram.elements[12].value)},
+    {"building": "Навч. корпус №2a(0147641 Реактивна)", "value": parseFloat(diagram.elements[13].value)},
+    {"building": "Навч. корпус №2a(0147641 Генерація)", "value": parseFloat(diagram.elements[14].value)},
+    {"building": "Навч. корпус №6 (0147881 Активна)", "value": parseFloat(diagram.elements[15].value)},
+    {"building": "Навч. корпус №6 (0147881 Реактивна)", "value": parseFloat(diagram.elements[16].value)},
+    {"building": "Навч. корпус №6 (0147901 Активна)", "value": parseFloat(diagram.elements[17].value)},
+    {"building": "Навч. корпус №6 (0147901 Реактивна)", "value": parseFloat(diagram.elements[18].value)},
+    {"building": "Навч. корпус №7 (Активна)", "value": parseFloat(diagram.elements[19].value)},
+    {"building": "Навч. корпус №7 (Реактивна)", "value": parseFloat(diagram.elements[20].value)},
+    {"building": "Комора (Активна)", "value": parseFloat(diagram.elements[21].value)},
+    {"building": "Їдальня №1 (Активна)", "value": parseFloat(diagram.elements[22].value)},
+    {"building": "Гараж (Активна)", "value": parseFloat(diagram.elements[23].value)},
+    {"building": "Гараж (Реактивна)", "value": parseFloat(diagram.elements[24].value)},
+    {"building": "Гараж (Генерація)", "value": parseFloat(diagram.elements[25].value)},
+    {"building": "Полігон (Активна)", "value": parseFloat(diagram.elements[26].value)},
+    {"building": "Буровий павільйон (Активна)", "value": parseFloat(diagram.elements[27].value)},
+    {"building": "Гуртожиток №1 (Активна)", "value": parseFloat(diagram.elements[28].value)},
+    {"building": "Гуртожиток №2 (Активна)", "value": parseFloat(diagram.elements[29].value)},
+    {"building": "Гуртожиток №3 (Активна)", "value": parseFloat(diagram.elements[30].value)},
+    {"building": "Гуртожиток №4 (Активна)", "value": parseFloat(diagram.elements[31].value)},
+    {"building": "Гуртожиток №5 (Активна)", "value": parseFloat(diagram.elements[32].value)},
+    {"building": "Гуртожиток №6 (111617 Активна)", "value": parseFloat(diagram.elements[33].value)},
+    {"building": "Гуртожиток №6 (38469 Активна)", "value": parseFloat(diagram.elements[34].value)},
+    {"building": "Гуртожиток №7 (38399 Активна)", "value": parseFloat(diagram.elements[35].value)},
+    {"building": "Гуртожиток №7 (100387 Активна)", "value": parseFloat(diagram.elements[36].value)},
+    {"building": "Гуртожиток №8 (38152 Активна)", "value": parseFloat(diagram.elements[37].value)},
+    {"building": "Гуртожиток №8 (111578 Активна)", "value": parseFloat(diagram.elements[38].value)},
+    {"building": "Гуртожиток №8 (01022579 Активна)", "value": parseFloat(diagram.elements[39].value)},
+    {"building": "ТП-38 (Активна)", "value": parseFloat(diagram.elements[40].value)},
+    {"building": "ТП-38 (Реактивна)", "value": parseFloat(diagram.elements[41].value)},
+    {"building": "ТП-38 (Генерація)", "value": parseFloat(diagram.elements[42].value)},
+    {"building": "ТП-72 (Активна)", "value": parseFloat(diagram.elements[43].value)},
+    {"building": "ТП-72 (Реактивна)", "value": parseFloat(diagram.elements[44].value)},
+    {"building": "ТП-72 (Генерація)", "value": parseFloat(diagram.elements[45].value)},
+    {"building": "Інст. післядипломної освіти (Активна)", "value": parseFloat(diagram.elements[46].value)}
+  ];
+
+  x.domain(data.map(d => { return d.building; }));
+  y.domain([0, d3.max(data, d => { return d.value; })]);
+
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+  svg.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", d => { return x(d.building); })
+    .attr("width", x.bandwidth())
+    .attr("y", d => { return y(d.value); })
+    .attr("height", d => { return height - y(d.value); });
+
+</script>
+</div></div>
+
+<div class="table-container" style="background-color: white;">
+<b><p>Електрична енергія споживання</p></b>
+<table class = "tableOneE">
+    <tr>
+      <th>Об'єкт</th>
+      <th colspan="3">Навчальний корпус №1</th>
+      <th colspan="6">Навчальний корпус №2</th>
+      <th colspan="6">Навчальний корпус №2а</th>
+      <th colspan="4">Навчальний корпус №6</th>
+      <th colspan="2">Навчальний корпус №7</th>
+      <th>Комора</th>
+      <th>Їдальня №1</th>
+      <th colspan="3">Гараж</th>
+      <th >Полігон</th>
+      <th >Буровий павільйон</th>
+      <th >Гуртожиток №1</th>
+      <th >Гуртожиток №2</th>
+      <th >Гуртожиток №3</th>
+      <th >Гуртожиток №4</th>
+      <th >Гуртожиток №5</th>
+      <th colspan="2">Гуртожиток №6</th>
+      <th colspan="2">Гуртожиток №7</th>
+      <th colspan="3">Гуртожиток №8</th>
+      <th colspan="3">ТП-38</th>
+      <th colspan="3">ТП-72</th>
+            <th>Інститут післядипломної<br>освіти</th>
+    </tr>
+    <tr>
+      <th>Тип енергії/од.вимірювання/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th >Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+      <th>Реактивна/кіловар-год/</th>
+      <th>Генерація/кіловар-год/</th>
+      <th>Активна/кВт-год/</th>
+    </tr>
+    <tr>
+      <td>Номер лічильника</td>
+      <td colspan="3">0147660</td>
+      <td colspan="3">255447</td>
+      <td colspan="3">255388</td>
+      <td colspan="3">0223942</td>
+      <td colspan="3">0147641</td>
+      <td colspan="2">0147881</td>
+      <td colspan="2">0147901</td>
+      <td colspan="2">0147668</td>
+      <td>7924948</td>
+      <td>0204848</td>
+      <td colspan="3">8049260</td>
+      <td>7945301</td>
+      <td>20191980</td>
+      <td>53035</td>
+      <td>111616</td>
+      <td>244403</td>
+      <td>111580</td>
+      <td>100401</td>
+      <td>111617</td>
+      <td>38469</td>
+      <td>38399</td>
+      <td>100387</td>
+      <td>38152</td>
+      <td>111578</td>
+      <td>01022579</td>
+      <td colspan="3">255387</td>
+      <td colspan="3">255385</td>
+      <td>0979485</td>
+
+    </tr>
+    <tr>
+      <td style="background-color: #DCDCDC; font-weight: bold;">Дата</td>
+      <td style="background-color: #DCDCDC;" colspan="47"></td>
+    </tr>
+
+    {% for data in datas %}
+    <tr>
+    {% if data.datemonth == 1 %} <td>січень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 2 %} <td>лютий <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 3 %} <td>березень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 4 %} <td>квітень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 5 %} <td>травень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 6 %} <td>червень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 7 %} <td>липень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 8 %} <td>серпень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 9 %} <td>вересень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 10 %} <td>жовтень <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 11 %} <td>листопад <br> {{data.dateyear}}</td>
+    {% elif data.datemonth == 12 %} <td>грудень <br> {{data.dateyear}}</td>
+    {% endif %}
+
+    {% if data.ed_building1_1 == None %} <td></td> {% else %} <td>{{data.ed_building1_1}}</td> {% endif %}
+    {% if data.ed_building1_2 == None %} <td></td> {% else %} <td>{{data.ed_building1_2}}</td> {% endif %}
+    {% if data.ed_building1_3 == None %} <td></td> {% else %} <td>{{data.ed_building1_3}}</td> {% endif %}
+    {% if data.ed_building2_1 == None %} <td></td> {% else %} <td>{{data.ed_building2_1}}</td> {% endif %}
+    {% if data.ed_building2_2 == None %} <td></td> {% else %} <td>{{data.ed_building2_2}}</td> {% endif %}
+    {% if data.ed_building2_3 == None %} <td></td> {% else %} <td>{{data.ed_building2_3}}</td> {% endif %}
+    {% if data.ed_building2_4 == None %} <td></td> {% else %} <td>{{data.ed_building2_4}}</td> {% endif %}
+    {% if data.ed_building2_5 == None %} <td></td> {% else %} <td>{{data.ed_building2_5}}</td> {% endif %}
+    {% if data.ed_building2_6 == None %} <td></td> {% else %} <td>{{data.ed_building2_6}}</td> {% endif %}
+    {% if data.ed_building2a_1 == None %} <td></td> {% else %} <td>{{data.ed_building2a_1}}</td> {% endif %}
+    {% if data.ed_building2a_2 == None %} <td></td> {% else %} <td>{{data.ed_building2a_2}}</td> {% endif %}
+    {% if data.ed_building2a_3 == None %} <td></td> {% else %} <td>{{data.ed_building2a_3}}</td> {% endif %}
+    {% if data.ed_building2a_4 == None %} <td></td> {% else %} <td>{{data.ed_building2a_4}}</td> {% endif %}
+    {% if data.ed_building2a_5 == None %} <td></td> {% else %} <td>{{data.ed_building2a_5}}</td> {% endif %}
+    {% if data.ed_building2a_6 == None %} <td></td> {% else %} <td>{{data.ed_building2a_6}}</td> {% endif %}
+    {% if data.ed_building6_1 == None %} <td></td> {% else %} <td>{{data.ed_building6_1}}</td> {% endif %}
+    {% if data.ed_building6_2 == None %} <td></td> {% else %} <td>{{data.ed_building6_2}}</td> {% endif %}
+    {% if data.ed_building6_3 == None %} <td></td> {% else %} <td>{{data.ed_building6_3}}</td> {% endif %}
+    {% if data.ed_building6_4 == None %} <td></td> {% else %} <td>{{data.ed_building6_4}}</td> {% endif %}
+    {% if data.ed_building7_1 == None %} <td></td> {% else %} <td>{{data.ed_building7_1}}</td> {% endif %}
+    {% if data.ed_building7_2 == None %} <td></td> {% else %} <td>{{data.ed_building7_2}}</td> {% endif %}
+    {% if data.barn == None %} <td></td> {% else %} <td>{{data.barn}}</td> {% endif %}
+    {% if data.canteen == None %} <td></td> {% else %} <td>{{data.canteen}}</td> {% endif %}
+    {% if data.garage_1 == None %} <td></td> {% else %} <td>{{data.garage_1}}</td> {% endif %}
+	{% if data.garage_2 == None %} <td></td> {% else %} <td>{{data.garage_2}}</td> {% endif %}
+	{% if data.garage_3 == None %} <td></td> {% else %} <td>{{data.garage_3}}</td> {% endif %}
+    {% if data.proving_ground == None %} <td></td> {% else %} <td>{{data.proving_ground}}</td> {% endif %}
+    {% if data.pavilion == None %} <td></td> {% else %} <td>{{data.pavilion}}</td> {% endif %}
+    {% if data.hostel1 == None %} <td></td> {% else %} <td>{{data.hostel1}}</td> {% endif %}
+    {% if data.hostel2 == None %} <td></td> {% else %} <td>{{data.hostel2}}</td> {% endif %}
+    {% if data.hostel3 == None %} <td></td> {% else %} <td>{{data.hostel3}}</td> {% endif %}
+    {% if data.hostel4 == None %} <td></td> {% else %} <td>{{data.hostel4}}</td> {% endif %}
+    {% if data.hostel5 == None %} <td></td> {% else %} <td>{{data.hostel5}}</td> {% endif %}
+    {% if data.hostel6_1 == None %} <td></td> {% else %} <td>{{data.hostel6_1}}</td> {% endif %}
+    {% if data.hostel6_2 == None %} <td></td> {% else %} <td>{{data.hostel6_2}}</td> {% endif %}
+    {% if data.hostel7_1 == None %} <td></td> {% else %} <td>{{data.hostel7_1}}</td> {% endif %}
+    {% if data.hostel7_2 == None %} <td></td> {% else %} <td>{{data.hostel7_2}}</td> {% endif %}
+    {% if data.hostel8_1 == None %} <td></td> {% else %} <td>{{data.hostel8_1}}</td> {% endif %}
+    {% if data.hostel8_2 == None %} <td></td> {% else %} <td>{{data.hostel8_2}}</td> {% endif %}
+    {% if data.hostel8_3 == None %} <td></td> {% else %} <td>{{data.hostel8_3}}</td> {% endif %}
+    {% if data.TP38_1 == None %} <td></td> {% else %} <td>{{data.TP38_1}}</td> {% endif %}
+    {% if data.TP38_2 == None %} <td></td> {% else %} <td>{{data.TP38_2}}</td> {% endif %}
+    {% if data.TP38_3 == None %} <td></td> {% else %} <td>{{data.TP38_3}}</td> {% endif %}
+    {% if data.TP72_1 == None %} <td></td> {% else %} <td>{{data.TP72_1}}</td> {% endif %}
+    {% if data.TP72_2 == None %} <td></td> {% else %} <td>{{data.TP72_2}}</td> {% endif %}
+    {% if data.TP72_3 == None %} <td></td> {% else %} <td>{{data.TP72_3}}</td> {% endif %}
+    {% if data.institute == None %} <td></td> {% else %} <td>{{data.institute}}</td> {% endif %}
+  </tr>
+    {% endfor %}
+  </table>
+  
+</div>
+  
+{% else %}
+<br><br><p style="color: rgb(255, 80, 0); font-size: 2.5em; text-align: center; background-color: white;">У Вас немає доступу до цієї таблиці</p>
+<center><button style="background-color: white;"><a style="color:rgb(0,71,107); font-size: 1.5em;" href="{% url 'home' %}">Повернутися на Головну сторінку</a></button></center>
+{% endif %}
+
+{% endblock content %}

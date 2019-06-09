@@ -1,0 +1,26 @@
+.table-container{
+   padding: 1%;
+   width: 100%;
+     overflow-y: auto;
+     overflow: auto;
+     margin: 0 0 1em;
+  }
+
+.tableOne{
+    background-color: white;
+}
+.tableOne th{
+
+  height: 10em;
+    transform: rotate(-90deg);
+}
+ .tableOne th,
+ .tableOne td {
+   text-align: center;
+   font-size: 0.9em;
+   border: 1px solid black;
+ }
+ .tableOne td {
+   height: 20px;
+ }
+ 

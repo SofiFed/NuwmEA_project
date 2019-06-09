@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'datas',
+    'tables',
+    'social_django',
+    'managerusers.apps.ManagerusersConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,20 +65,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',  
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'NuwmEA.wsgi.application'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', )
-}
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -112,6 +107,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+ 'social_core.backends.open_id.OpenIdAuth',  
+ 'social_core.backends.google.GoogleOpenId', 
+ 'social_core.backends.google.GoogleOAuth2', 
+ 
+ 'django.contrib.auth.backends.ModelBackend',
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -126,6 +129,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''  
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '' 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -137,6 +142,15 @@ STATICFILES_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
 
-LOGIN_REDIRECT_URL = 'user_login'
-LOGOUT_REDIRECT_URL = 'user_login'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'     
+EMAIL_HOST_USER = ''     
+EMAIL_HOST_PASSWORD = ''    
+EMAIL_PORT = 587                    
+                   

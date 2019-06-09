@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Авторизація</title>
-  {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'styleautho.css' %}" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+  <title>Вхід</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'styleautho.css' %}" />
 </head>
 <body>
 <div class="container">
-	
+  
     <div class="row">
 
-
+         <div class="col-md-offset-3 col-md-6">
+        <form class="form-horizontalc">
+          
+        <span class="header">NuwmEnergyAnalytics</span>
+      </form></div>
       <div class="col-md-offset-3 col-md-6">
-        <form class="horForm" method="POST">
-          {% csrf_token %}
-        	<span class="avatar">
-						<img src="{% static 'image2.png' %}" class="avatar" />
-					</span>
-        <span class="head">АВТОРИЗАЦІЯ</span>
-        <p>{{ error }}</p>
-          <div class="form-group">
-          <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="required">
-          <i class="fa fa-user"></i>
-      </div>
-
-    <div class="form-group help">
-     <input type="password" class="form-control" id="password" name="password" placeholder="Password" required="required">
-     <i class="fa fa-lock"></i>
-     <a href="#" class="fa fa-question-circle"></a>
-    </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-default">Увійти</button>
-      <a href="{% url 'user_login' %}"<button type="submit" class="btn btn-default">Зареєструватись</button></a>
-    </div>
+        <form class="form-horizontal">
+        <span class="head">Авторизація користувача</span>
+        {% if not user.is_staff and user.is_authenticated %}
+        <div style="color:red; background-color: rgb(256,256,256,0.7);">Помилка входу! Відсутній дозвіл. Зверніться до Адміністратора</div><br>
+        <div class="form-group">
+         <a href="{% url 'logout' %}" type="submit" class="btn btn-default">Повернутися назад</a>
+         </div>
+        {% else %}
+        <div class="form-group">
+        <a href="{% url 'social:begin' 'google-oauth2' %}" type="submit" class="btn btn-default"><img src="{% static 'gmail.png' %}">Увійти через корпоративну пошту</a>
+        </div>
+        {% endif %}
        </form>
     </div>
 </div>
